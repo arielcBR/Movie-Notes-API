@@ -3,19 +3,16 @@ const express = require('express');
 
 const AppError = require('./utils/AppError.js');
 const routes = require('./routes/index.js') // Irá carregar o arquivo index.js 
-const database = require('./database/sqlite/index.js')
+const migrationRun = require('./database/sqlite/migrations/index.js')
 
 
 const app = express();
 const port = 3000;
 
+migrationRun();
+
 app.use(express.json());
-
-//Database
-
 app.use(routes);
-database();
-
 app.use((error, req, res, next) => {
     if (error instanceof AppError) {
         return res.status(error.statusCode).json({

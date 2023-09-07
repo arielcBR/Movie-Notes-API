@@ -2,14 +2,10 @@ require('express-async-errors');
 const express = require('express');
 
 const AppError = require('./utils/AppError.js');
-const routes = require('./routes/index.js') // Irá carregar o arquivo index.js 
-const migrationRun = require('./database/sqlite/migrations/index.js')
-
+const routes = require('./routes/index.js') 
 
 const app = express();
 const port = 3000;
-
-migrationRun();
 
 app.use(express.json());
 app.use(routes);

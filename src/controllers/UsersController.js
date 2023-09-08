@@ -22,7 +22,6 @@ class UsersController{
 
         const user = await knex('users')
             .where({ email });
-        
       
         if (!user.length) {
             await knex('users').insert({

@@ -2,20 +2,20 @@ const knex = require('../database/knex/index');
 
 class SearchUser {
     static async byEmail(email) {
-        const userExist = await knex("users").where({ email });
+        const DoesUserExist = await knex("users").where({ email });
         
-        if (!userExist.length)
+        if (!DoesUserExist.length)
             return false;
         
-        return (userExist[0]);
+        return (DoesUserExist[0]);
     }
     static async byId(id) {
-        const userExist = await knex("users").where({ id });
+        const DoesUserExist = await knex("users").where({ id });
         
-        if (!userExist.length)
+        if (!DoesUserExist.length)
             return false;
         
-        return (userExist[0]);
+        return (DoesUserExist[0]);
     }
 };
 

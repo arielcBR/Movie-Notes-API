@@ -30,7 +30,7 @@ class UsersController{
             return res.json({message: "The user has been created!"});  
         }
         
-        return res.status(400).json({message: "The email is already registered!"});  
+        return new AppError("The email is already registered!");  
     }
 
     async showAll(req, res) {
@@ -47,7 +47,7 @@ class UsersController{
         const user = await knex('users').where({ id });
         
         if (!user.length)
-            return res.json({ message: "There is no user registered yet!" });
+        new AppError("There is no user registered yet!");
 
         return res.json({
             "User": user[0].name,
@@ -62,7 +62,7 @@ class UsersController{
         const user = await knex('users').where({ id });
 
         if (!user.length)
-            return res.json({ message: "There is no user registered!" });
+        new AppError("There is no user registered!");
 
 
         await knex('users').where({ id }).del();

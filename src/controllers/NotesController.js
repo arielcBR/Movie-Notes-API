@@ -62,6 +62,7 @@ class NotesController{
 
         return res.json({message: "The note has been deleted!"});
     }
+
 }
 
 module.exports = NotesController;

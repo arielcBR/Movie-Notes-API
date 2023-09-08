@@ -1,6 +1,7 @@
 const knex = require('../database/knex/index');
 const { hash, compare } = require('bcrypt');
 const AppError = require('../utils/AppError');
+const SearchUser = require('../utils/SearchUser');
 
 class UsersController{
     async create(req, res) {
@@ -67,6 +68,25 @@ class UsersController{
 
         await knex('users').where({ id }).del();
         return res.json({ message: "The user has been deleted!"});
+    }
+
+    async updatePassword(req, res) {
+        const { email, old_password, new_password } = req.body;
+        const user = await SearchUser.byEmail(email);
+
+        if (!user)
+            throw new AppError("The user does not exist!");
+
+        const passwordIsOk = await compare(old_password, user.password);
+
+        if (!passwordIsOk)
+            throw new AppError("the old password does not match!");
+
+        const newPasswordHashed = await hash(new_password, 10);
+
+        await knex("users").where({ email }).update({ password: newPasswordHashed });
+
+        return res.json({ message: "The password has been changed!" });
     }
 }
 

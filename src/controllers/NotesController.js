@@ -1,5 +1,6 @@
 const knex = require('../database/knex/index');
 const AppError = require('../utils/AppError');
+const SearchUser = require('../utils/SearchUser');
 
 class NotesController{
     async create(req, res) {
@@ -37,12 +38,12 @@ class NotesController{
 
     async showNotesByUser(req, res) {
         const { user_id } = req.params;
-        const user = await knex('users').where({ id: user_id });
+        const user = await SearchUser.byId(user_id);
         
-        if (!user.length)
+        if (!user)
             throw new AppError("The user does not exist!");
 
-        const notes = await knex("movie_notes").where({ user_id }).orderBy("rating", "desc");
+        const notes = await knex("movie_notes").where({ user_id: user.id }).orderBy("rating", "desc");
 
         if (!notes.length)
             return res.json({ message: "The user did not register any note yet!" });

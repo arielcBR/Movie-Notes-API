@@ -2,20 +2,23 @@ const knex = require('../database/knex/index');
 const { hash, compare } = require('bcrypt');
 const AppError = require('../utils/AppError');
 const SearchUser = require('../utils/SearchUser');
+const validateEmail = require('../utils/emailValidation');
 
 class UsersController{
     async create(req, res) {
         const { name, email, password } = req.body;
+        const isEmailValid = validateEmail(email);
 
         if (!name)
             throw new AppError("The field name is required!");
-        if(!email)
+        if (!email)
             throw new AppError("The field email is required!");
+        if (isEmailValid == null)
+            throw new AppError("The email is not valid");
         if(!password)
             throw new AppError("The field password is required!");
         
         const hashedPassword = await hash(password, 10);
-
 
         const user = await knex('users')
             .where({ email });

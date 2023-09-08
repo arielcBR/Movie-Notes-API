@@ -5,7 +5,7 @@ const SearchNote = require('../utils/SearchNote');
 
 class NotesController{
     async create(req, res) {
-        const {note_id, user_id, name } = req.body;
+        const {note_id, user_id, name} = req.body;
 
         const user = await SearchUser.byId(user_id);
         const note = await SearchNote.byId(note_id);

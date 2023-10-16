@@ -1,13 +1,17 @@
 require('express-async-errors');
 const express = require('express');
+const cors = require('cors');
 
 const AppError = require('./utils/AppError.js');
+const uploadConfig = require('./configs/upload')
 const routes = require('./routes/index.js') 
 
 const app = express();
 const port = 3000;
 
+app.use(cors());
 app.use(express.json());
+app.use('/files', express.static(uploadConfig.UPLOADS_FOLDER));
 app.use(routes);
 app.use((error, req, res, next) => {
     if (error instanceof AppError) {

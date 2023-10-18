@@ -90,6 +90,20 @@ class UsersController{
 
         return res.json({ message: "The password has been changed!" });
     }
+
+    async updateProfile(req, res) {
+        const { name, email } = req.body;
+        const user = await SearchUser.byEmail(email);
+
+        if (!user)
+            throw new AppError("The user does not exist!");
+
+        if (name) {
+            await knex("users").where({ email }).update({name: name});
+        }        
+
+        return res.json({ message: "The name has been changed!" });
+    }
 }
 
 module.exports = UsersController;

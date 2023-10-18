@@ -72,35 +72,35 @@ class UsersController{
         return res.json({ message: "The user has been deleted!"});
     }
 
-    async updatePassword(req, res) {
-        const { email, old_password, new_password } = req.body;
-        const user = await SearchUser.byEmail(email);
-
-        if (!user)
-            throw new AppError("The user does not exist!");
-
-        const passwordIsOk = await compare(old_password, user.password);
-
-        if (!passwordIsOk)
-            throw new AppError("the old password does not match!");
-
-        const newPasswordHashed = await hash(new_password, 10);
-
-        await knex("users").where({ email }).update({ password: newPasswordHashed });
-
-        return res.json({ message: "The password has been changed!" });
-    }
-
     async updateProfile(req, res) {
-        const { name, email } = req.body;
+        const { name, email, old_password, new_password } = req.body;
+        let password;
         const user = await SearchUser.byEmail(email);
 
         if (!user)
             throw new AppError("The user does not exist!");
+
+        user.name = name ?? user.name;
+
+        if (new_password) {
+            const passwordIsOk = await compare(old_password, user.password);
+    
+            if (!passwordIsOk)
+                throw new AppError("the old password does not match!");
+    
+            password = await hash(new_password, 10);
+        }
+
+        else
+            password = user.password;
+
+
 
         if (name) {
-            await knex("users").where({ email }).update({name: name});
-        }        
+            await knex("users").where({ email }).update({name: name, password});
+        }      
+        
+
 
         return res.json({ message: "The name has been changed!" });
     }
